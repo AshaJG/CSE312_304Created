@@ -1,0 +1,42 @@
+body {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+h6 {
+    align-self: center;
+    display: flex;
+    font-size: 12px;
+}
+
+.Login-Form {
+    align-self: center;
+    height: fit-content;
+    width: 450px;
+    border-radius: 10px;
+    background-color: black;
+    padding: 10px 10px 10px 10px;
+}
+
+.Signup-label {
+    font-weight: bold;
+    color: white;
+}
+
+.Input-box {
+    width: 250px;
+    height: 30px;
+    margin-top: 10px;
+    padding-left: 10px;
+    color: black;
+    border: none;
+    background-color: rgba(80, 80, 80, 1);
+    border-radius: 5px;
+}
+
+.button {
+    border: none;
+    margin-top: 20px;
+    border-radius: 3px;
+}
