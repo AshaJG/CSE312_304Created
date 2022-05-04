@@ -18,6 +18,7 @@ def add_paths(router):
 def home(request, handler):
     if not 'username' in request.cookies:
         redirct_to_login(request, handler)
+        return
     username = request.cookies['username']
     login_token = request.cookies['token'].encode('utf-8')
     db_token = db.get_token_by_username(username)[0][username]
@@ -26,6 +27,7 @@ def home(request, handler):
     if not bcrypt.checkpw(login_token, db_token.encode('utf-8')):
         print('Token did not match')
         redirct_to_login(request, handler)
+        return
     send_response('Pages/home.html', b'text/html; charset=utf-8', request, handler)
        
     
