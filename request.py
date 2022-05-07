@@ -1,5 +1,3 @@
-
-
 class Request:
     new_line = b'\r\n'
     boundary_line = b'\r\n\r\n'
