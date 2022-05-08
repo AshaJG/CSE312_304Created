@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit profile Page</title>
+    <link rel="stylesheet" type="text/css" href="profile.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <form action="/image-upload" id="image-form" method="post" enctype="multipart/form-data">
+            <h1> Edit Information</h1><br>
+            <label for="uname">Edit Username:</label>
+            <input type="text" id="uname" name="uname"><br><br>
+            <label for="image-form-comment">Edit Random Info:</label>
+            <textarea id="image-form-comment" name="random"> </textarea> <br><br>
+            <label for="form-file">Upload Pic</label>
+            <input id="form-file" type="file" name="upload">
+            <input type="submit" value="Update" class="btn">
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
