@@ -43,3 +43,5 @@ def send_to_database():
     post_dict = {"comment": comment_key, "pic_filename": pic_filename}
     # print("image file in send to db and dict sent", pic_filename, post_dict, flush=True)
     database.create_post(post_dict)
+
+

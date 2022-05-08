@@ -5,7 +5,7 @@ def generate_response(body: bytes, content_type: bytes = b'text/plain; charset=u
         for idx in range(len(cookieID)):
             response += b'\r\nSet-Cookie: ' + cookieID[idx].encode() + b'=' + cookieValue[
                 idx].encode() + b'; Max-Age=3600; HttpOnly'
-    response += b'\r\nContent-Lenth: ' + str(len(body)).encode()
+    response += b'\r\nContent-Length: ' + str(len(body)).encode()
     response += b'\r\nContent-Type: ' + content_type
     response += b'\r\nX-Content-Type-Options: nosniff'
     response += b'\r\n\r\n'
