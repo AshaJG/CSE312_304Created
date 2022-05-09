@@ -1,7 +1,9 @@
+# from formParser import get_bodyBoundary
+
+
 class Request:
     new_line = b'\r\n'
     boundary_line = b'\r\n\r\n'
-
 
     def __init__(self, request: bytes):
         [request_line, header_as_bytes, self.body] = split_request(request)
@@ -10,6 +12,7 @@ class Request:
         self.cookies = parse_cookies(self.headers)
         self.boundary = parse_boundary(self.headers)
         self.form_content = parse_form(self.body, self.boundary)
+        # self.profile_boundary = get_bodyBoundary(self.headers)
 
 
 def split_request(request: bytes):
@@ -46,6 +49,7 @@ def parse_boundary(headers):
         return boundary.encode()
     return b''
 
+
 def parse_cookies(headers):
     cookie_dic = {}
     if "Cookie" in headers:
@@ -54,18 +58,23 @@ def parse_cookies(headers):
             cookie = cookie.split("=")
             cookie_dic[cookie[0].strip()] = cookie[1].strip()
         return cookie_dic
-    return cookie_dic       
+    return cookie_dic
+
 
 def parse_form(body, boundary):
     form_dic = {}
     if boundary != b'' and body != b'':
         content = body.split(boundary)
         content.pop(0)
-        content.pop(len(content)-1)
+        content.pop(len(content) - 1)
         for idx in range(len(content)):
-            idx_equal = content[idx].find(b'=')+2
+            idx_equal = content[idx].find(b'=') + 2
             content[idx] = content[idx][idx_equal:]
-            content[idx] = content[idx].split(b'\r\n\r\n')
-            form_dic[content[idx][0].strip(b'"').decode()] = content[idx][1].strip(b'\r\n').decode()
+            body_boundary_line =  content[idx].find(b'\r\n\r\n')
+            body_new_line = content[idx].rfind(b'\r\n')
+            name_of_body = content[idx][:body_boundary_line]
+            name_of_body = name_of_body[:name_of_body.find(b";")]
+            name_of_body = name_of_body.strip(b'"').decode()
+            form_body = content[idx][body_boundary_line+ len(b'\r\n\r\n'):body_new_line]
+            form_dic[name_of_body] = form_body
     return form_dic
-

@@ -5,24 +5,24 @@ from response import generate_response
 
 
 class Router:
-    
+
     def __init__(self):
         self.routes = []
-        self.route_404 = Route('','', Error)
-        
-    def add_route(self,route):
+        self.route_404 = Route('', '', Error)
+
+    def add_route(self, route):
         self.routes.append(route)
 
-    def handle_request(self,request: Request, handler):
+    def handle_request(self, request: Request, handler):
         for route in self.routes:
             if route.is_request_match(request):
-                route.handle_request(request,handler)
+                route.handle_request(request, handler)
                 return
-        self.route_404.handle_request(request,handler)
+        self.route_404.handle_request(request, handler)
 
 
 class Route:
-    
+
     def __init__(self, method, path, action):
         self.method = method
         self.path = path
@@ -39,6 +39,7 @@ class Route:
 
     def handle_request(self, request: Request, handler):
         self.action(request, handler)
+
 
 def Error(request, handler, message: bytes = b'404\nPage Not Found'):
     response = generate_response(message, b'text/plain; charset=utf-8', b'404 NOT FOUND')
