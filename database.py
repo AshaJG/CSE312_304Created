@@ -28,7 +28,7 @@ def get_next_id():
 
 
 def store_user(username, password):
-    user_collection.insert_one({"username": username, "password": password.encode("utf-8")})
+    user_collection.insert_one({"username": username, "password": password})
     print(username + ' Store in the database')
 
 

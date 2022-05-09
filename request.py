@@ -12,7 +12,6 @@ class Request:
         self.cookies = parse_cookies(self.headers)
         self.boundary = parse_boundary(self.headers)
         self.form_content = parse_form(self.body, self.boundary)
-
         # self.profile_boundary = get_bodyBoundary(self.headers)
 
 
