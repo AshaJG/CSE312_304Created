@@ -28,13 +28,14 @@ def get_next_id():
 
 
 def store_user(username, password):
-    user_collection.insert_one({username: password})
+    user_collection.insert_one({"username": username, "password": password.encode("utf-8")})
     print(username + ' Store in the database')
 
 
 def get_user_by_username(username):
-    user = user_collection.find({}, {username: 1, '_id': 0})
-    return list(user)
+    user = user_collection.find_one({"username": username},{"_id":0})
+    print("user: ", user)
+    return user
 
 
 def store_user_token(username, token):

@@ -17,24 +17,18 @@ class MyTCHandler(socketserver.BaseRequestHandler):
         self.router = Router()
         add_paths(self.router)
         register_paths.add_paths(self.router)
-        # path_register(self.router)
         super().__init__(request, client_address, server)
 
     def handle(self):
         received_data = self.request.recv(1048)
         if len(received_data) == 0:
             return
-        print("------received data---------------")
-        print(received_data, flush=True)
-        print("----------ending------------------\n\n")
         sys.stdout.flush()
         sys.stderr.flush()
         request = Request(received_data)
 
         content_length = request.headers.get('Content-Length')
         request_path = request.path
-        # print("the request path", request.path, flush=True)
-        # print("the dict",request.headers, flush=True)
 
         # # implementing the buffer for dealing with profile
         # if request_path == "/image-upload" and content_length is not None:
@@ -54,9 +48,7 @@ class MyTCHandler(socketserver.BaseRequestHandler):
         #     formParser.separate_body(profile_buffer)
 
         if "Content-Length" in request.headers:
-            print("in here the content length", request.headers["Content-Length"], flush=True)
             received_data += buffer(int(request.headers["Content-Length"]) - len(request.body), self)
-            # print("the received data", received_data, len(received_data),flush=True)
         request = Request(received_data)
         self.router.handle_request(request, self)
 

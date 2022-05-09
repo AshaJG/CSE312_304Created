@@ -12,7 +12,6 @@ class Request:
         self.cookies = parse_cookies(self.headers)
         self.boundary = parse_boundary(self.headers)
         self.form_content = parse_form(self.body, self.boundary)
-        print("the form content ",self.form_content, flush =True )
 
         # self.profile_boundary = get_bodyBoundary(self.headers)
 
@@ -72,6 +71,11 @@ def parse_form(body, boundary):
         for idx in range(len(content)):
             idx_equal = content[idx].find(b'=') + 2
             content[idx] = content[idx][idx_equal:]
-            content[idx] = content[idx].split(b'\r\n\r\n')
-            form_dic[content[idx][0].strip(b'"').decode()] = content[idx][1].strip(b'\r\n').decode()
+            body_boundary_line =  content[idx].find(b'\r\n\r\n')
+            body_new_line = content[idx].rfind(b'\r\n')
+            name_of_body = content[idx][:body_boundary_line]
+            name_of_body = name_of_body[:name_of_body.find(b";")]
+            name_of_body = name_of_body.strip(b'"').decode()
+            form_body = content[idx][body_boundary_line+ len(b'\r\n\r\n'):body_new_line]
+            form_dic[name_of_body] = form_body
     return form_dic
