@@ -22,7 +22,9 @@ def home(request, handler):
         return
     username = request.cookies['username']
     login_token = request.cookies['token'].encode('utf-8')
-    db_token = db.get_token_by_username(username)[0][username]
+    # db_token = db.get_token_by_username(username)[0][username]
+    record = db.get_token_by_username(username)
+    db_token = record.get('auth_token')
     if not bcrypt.checkpw(login_token, db_token.encode('utf-8')):
         redirct_to_login(request, handler)
         return
@@ -58,7 +60,8 @@ def login(request, handler):
             response = generate_response_redirect(["token", "username"], [token, username])
             salt = bcrypt.gensalt()
             token = bcrypt.hashpw(token.encode("utf-8"), salt)
-            db.store_user_token(username, token)
+            db.store_user_token(username, token.decode())
+
             handler.request.sendall(response)
         else:
             handler.request.sendall(generate_response_redirect())

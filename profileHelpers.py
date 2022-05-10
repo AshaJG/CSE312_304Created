@@ -13,8 +13,8 @@ def send_file(filename, mime_type, request, handler):
 
 
 # responsible for generating the picture file
-def write_incoming_picture():
-    picture = formParser.actual_picture
+def write_incoming_picture(picture):
+    # picture = formParser.actual_picture
     pic_no = database.get_next_id()
     image_fn = f'image{pic_no}'
     flag = os.path.exists(image_fn)

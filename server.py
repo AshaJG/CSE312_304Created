@@ -23,6 +23,10 @@ class MyTCHandler(socketserver.BaseRequestHandler):
         received_data = self.request.recv(1048)
         if len(received_data) == 0:
             return
+        print("------received data---------------")
+        print(received_data, flush=True)
+        print("----------ending------------------\n\n")
+
         sys.stdout.flush()
         sys.stderr.flush()
         request = Request(received_data)
