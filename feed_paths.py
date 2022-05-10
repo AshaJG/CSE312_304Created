@@ -12,6 +12,7 @@ def add_paths(router):
     router.add_route(Route("GET", "/image/.", images))
 
 
+# Gets the image for image requested
 def images(request, handler):
     data = request.path.split('/')
     # Search through images to find request on
@@ -23,7 +24,7 @@ def images(request, handler):
     handler.request.sendall(response)
 
 
-
+# Checks for auth-token and random token before allow user to upload to feed page
 def feed(request, handler):
     auth_token = request.cookies["token"]
     feed_auth_token = request.form_content["auth_token"]
@@ -41,7 +42,7 @@ def feed(request, handler):
     handler.request.sendall(response)
 
 
-
+# Saves the image into the local server files
 def save_image(image: bytes):
     image_file_name = ""
     if image != b'':

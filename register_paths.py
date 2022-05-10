@@ -15,19 +15,23 @@ def add_paths(router):
     router.add_route(Route('POST', '/register$', register))
     router.add_route(Route('GET', '/register$', registerPage))
     router.add_route(Route('GET', '/login.css$', loginCSS))
+    router.add_route(Route('GET', '/home.js', homejs))
     router.add_route(Route('GET', '/$', home))
 
 
 def home(request, handler):
+    # Veify that there is a token for the username
     if not 'username' in request.cookies:
         redirct_to_login(request, handler)
         return
     username = request.cookies['username']
     login_token = request.cookies['token'].encode('utf-8')
     db_token = db.get_token_by_username(username)[0][username]
+    # Verify the auth-token in database to that username is the same with the one sent by cookies
     if not bcrypt.checkpw(login_token, db_token.encode('utf-8')):
         redirct_to_login(request, handler)
         return
+    # Renders the home page
     content = render_template('Pages/home.html', {"loop_data": db.get_all_feed()})
     content = content.replace("{{Auth-Token}}", login_token.decode())
     token = secrets.token_urlsafe(20)
@@ -36,15 +40,15 @@ def home(request, handler):
     handler.request.sendall(response)
     
 
-
+# Renders the Register Page
 def registerPage(request, handler):
     send_response('Pages/signup.html', b'text/html; charset=utf-8', request, handler)
 
-
+# Renders the Login Page
 def loginPage(request, handler):
     send_response('Pages/login.html', b'text/html; charset=utf-8', request, handler)
 
-
+# Store user in the database when they sign up
 def register(request, handler):
     salt = bcrypt.gensalt()
     password = request.form_content['password'].decode().encode("utf-8")
@@ -53,7 +57,8 @@ def register(request, handler):
     db.store_user(username, hashed_password)
     handler.request.sendall(b'HTTP/1.1 301 Ok\r\nContent-Length: 0\r\nLocation: /\r\n\r\n')
 
-
+# Logins in user when the correct password and username are inputed
+# Creates a new Auth-token for everytime they log in
 def login(request, handler):
     username = request.form_content['username'].decode()
     password = request.form_content['password'].decode()
@@ -75,11 +80,14 @@ def login(request, handler):
         handler.request.sendall(generate_response_redirect())
         print("user not found")
 
-
+# Renders the login CSS
 def loginCSS(request, handler):
     send_response('Pages/login.css', b'text/css; charset=utf-8', request, handler)
 
+def homejs(request, handler):
+    send_response('Pages/home.js', b'text/js; charset=utf-8', request, handler)
 
+    
 def redirct_to_login(request, handler):
     handler.request.sendall('HTTP/1.1 301 OK\r\nContent-Length: 0\r\nLocation: /login\r\n'.encode())
 
