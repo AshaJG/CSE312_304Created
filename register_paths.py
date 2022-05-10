@@ -3,6 +3,8 @@ import bcrypt
 import secrets
 
 from response import generate_response, generate_response_redirect
+from file_engine import send_response
+from template_engine import *
 from router import Route
 import database as db
 
@@ -26,7 +28,13 @@ def home(request, handler):
     if not bcrypt.checkpw(login_token, db_token.encode('utf-8')):
         redirct_to_login(request, handler)
         return
-    send_response('Pages/home.html', b'text/html; charset=utf-8', request, handler)
+    content = render_template('Pages/home.html', {"loop_data": db.get_all_feed()})
+    content = content.replace("{{Auth-Token}}", login_token.decode())
+    token = secrets.token_urlsafe(20)
+    content = content.replace("{{token}}", token)
+    response = generate_response(content.encode(), b'text/html; charset=utf-8', b'200 OK', ["username","token"], [username, login_token.decode()])
+    handler.request.sendall(response)
+    
 
 
 def registerPage(request, handler):
@@ -76,8 +84,4 @@ def redirct_to_login(request, handler):
     handler.request.sendall('HTTP/1.1 301 OK\r\nContent-Length: 0\r\nLocation: /login\r\n'.encode())
 
 
-def send_response(filename, mime_type, request, handler):
-    with open(filename, 'rb') as content:
-        body = content.read()
-        response = generate_response(body, mime_type)
-        handler.request.sendall(response)
+

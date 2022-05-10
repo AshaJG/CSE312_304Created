@@ -10,7 +10,13 @@ def replace_placeholders(template, data):
     replaced_template = template
     for placeholder in data.keys():
         if isinstance(data[placeholder], str):
-            replaced_template = replaced_template.replace("{{" + placeholder + "}}", data[placeholder])
+            if placeholder != "image_file":
+                replaced_template = replaced_template.replace("{{"+placeholder+"}}", data[placeholder])
+            else:
+                if data[placeholder] != '':
+                    replaced_template = replaced_template.replace("{{"+placeholder+"}}", "<img src= image/" + data[placeholder] + " alt= It's a "+ data[placeholder] + " class= my_image sytle= width: 100px; height: 100p;/>")
+                else:
+                    replaced_template = replaced_template.replace("{{"+placeholder+"}}", "") 
     return replaced_template
 
 

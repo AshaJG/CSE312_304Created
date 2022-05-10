@@ -7,6 +7,23 @@
 
 <body>
     welcome to Home page
+    <form class="postForm" action="/feed_content" id="image-form" method="post" enctype="multipart/form-data">
+        <label for="image-form-comment">Comment: </label>
+        </br>
+        <textarea placeholder="Have something on your mind...." class="chatInput" id="image-form-comment" name="comment"
+            cols="40" rows="6"></textarea>
+        <br />
+        <label for="form-file">Image: </label>
+        <input class="button" id="form-file" type="file" name="upload">
+        <input id="form-token" name="auth_token" type="hidden" value="{{Auth-Token}}">
+        <input id="form-token" name="token" type="hidden" value="{{token}}">
+        <input class="button" type="submit" value="Post">
+    </form>
+    {{loop}}
+    <div style="width: 30%; flex-grow: 1; word-wrap: break-word;">
+        <p><b>{{message}}</b><br />{{image_file}}</p>
+    </div>
+    {{end_loop}}
 </body>
 
 </html>

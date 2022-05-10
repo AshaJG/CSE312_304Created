@@ -4,16 +4,15 @@ import sys
 from pymongo import MongoClient
 
 mongo_client = MongoClient("mongo")
-db = mongo_client["cse312"]  # connecting to db
+db = mongo_client['ProjectCSE312']
+
+# Create database accordingly
 users_posting_collection = db["posts"]  # MAY NEED TO EDIT ACCORDINGLY
 users_id_collection = db["users_id"]
-
-mongo_client = MongoClient('mongo')
-db = mongo_client['ProjectCSE312']
 user_collection = db['users']
 user_token_collection = db['userTokens']
-
-print("starting db..")
+image_id_collection = db["image_id"]
+feed_collection = db["feed"]
 
 
 def get_next_id():
@@ -25,6 +24,24 @@ def get_next_id():
     else:
         users_id_collection.insert_one({'last_id': 1})
         return 1
+
+
+def get_next_image_id():
+    id_object = image_id_collection.find_one({})
+    if id_object:
+        next_id = int(id_object['last_id']) + 1
+        image_id_collection.update_one({}, {'$set': {'last_id': next_id}})
+        return next_id
+    else:
+        image_id_collection.insert_one({'last_id': 1})
+        return 1
+
+def store_feed_content(image, comment):
+    feed_collection.insert_one({'message': comment.decode(), "image_file": image})
+
+def get_all_feed():
+    feed_list = feed_collection.find({},{"_id":0})
+    return list(feed_list)
 
 
 def store_user(username, password):
