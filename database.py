@@ -83,22 +83,29 @@ def create_profileEdit(profile_dict):
 
 
 def update_profileEdit(update_dict):
-    token = update_dict.get('auth_token')
-    p_user = update_dict.get('profile_username')
+    username = update_dict.get('profile_username')
+    p_user = update_dict.get('profile_name')
     p_pic = update_dict.get('profile_pic')
     p_random = update_dict.get('random_info')
-    user_profile_collection.update_one({'auth_token': token}, {
-        '$set': {'profile_username': p_user, 'profile_pic': p_pic, 'random_info': p_random}})
+    user_profile_collection.update_one({'profile_username': username}, {
+        '$set': {'profile_name': p_user, 'profile_pic': p_pic, 'random_info': p_random}})
 
 
-def find_profileInfo(token_sent):
-    record = user_profile_collection.find_one({'auth_token': token_sent})
+# def find_profileInfo(token_sent):
+#     record = user_profile_collection.find_one({'auth_token': token_sent})
+#     return record
+
+
+def find_profileInfo(username):
+    record = user_profile_collection.find_one({'profile_username': username})
     return record
 
+
 def list_profile():
-    all_profiles = user_profile_collection.find({},{'_id':0})
+    all_profiles = user_profile_collection.find({}, {'_id': 0})
     return list(all_profiles)
 
+
 def list_token():
-    all_tokens = user_token_collection.find({},{'_id':0})
+    all_tokens = user_token_collection.find({}, {'_id': 0})
     return list(all_tokens)
