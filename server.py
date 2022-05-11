@@ -31,7 +31,6 @@ class MyTCHandler(socketserver.BaseRequestHandler):
         if "Content-Length" in request.headers:
             received_data += buffer(int(request.headers["Content-Length"]) - len(request.body), self)
         request = Request(received_data)
-        print(received_data.decode())
         self.router.handle_request(request, self)
 
 
