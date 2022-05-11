@@ -13,6 +13,7 @@ user_collection = db['users']
 user_token_collection = db['userTokens']
 image_id_collection = db["image_id"]
 feed_collection = db["feed"]
+user_profile_collection = db["profile"]
 
 
 def get_next_id():
@@ -50,32 +51,57 @@ def store_user(username, password):
 
 
 def get_user_by_username(username):
-    user = user_collection.find_one({"username": username},{"_id":0})
+    user = user_collection.find_one({"username": username}, {"_id": 0})
     print("user: ", user)
     return user
 
-
 def store_user_token(username, token):
-    tempt = {}
-    user = list(user_token_collection.find({}, {username: 1, '_id': 0}))
-    if user:
-        tempt = user_token_collection.update_one({}, {'$set': {username: token.decode()}})
+    record_exists = user_token_collection.find_one({'auth_token': token}, {'$exist': True})
+    if record_exists:
+        record = user_token_collection.update_one({'auth_token': token},
+                                                  {'$set': {'username': username, 'auth_token': token}})
+        print('DB the record update:', record, flush=True)
+        return record
     else:
-        tempt = user_token_collection.insert_one({username: token.decode()})
+        record = user_token_collection.insert_one({'username': username, 'auth_token': token})
+        print('DB the record insert:', record, flush=True)
+        return record
 
 
 def get_token_by_username(username):
-    user = user_token_collection.find({}, {username: 1, '_id': 0})
-    return list(user)
+    user = user_token_collection.find_one({'username': username})
+    return user
 
 
-# create posts to the database
-def create_post(p_dict):
-    post = users_posting_collection.insert_one(p_dict)
-    print("frm db created post", p_dict, flush=True)
-    return p_dict
+def find_userByToken(token_sent):
+    record = user_token_collection.find_one({'auth_token': token_sent})
+    return record
 
 
-def list_every_post():
-    all_posts = users_posting_collection.find({}, {"_id": 0})
-    return list(all_posts)
+def create_profileEdit(profile_dict):
+    record = user_profile_collection.insert_one(profile_dict)
+    print("record created :", record, flush=True)
+    return record
+
+
+def update_profileEdit(update_dict):
+    username = update_dict.get('profile_username')
+    p_user = update_dict.get('profile_name')
+    p_pic = update_dict.get('profile_pic')
+    p_random = update_dict.get('random_info')
+    user_profile_collection.update_one({'profile_username': username}, {
+        '$set': {'profile_name': p_user, 'profile_pic': p_pic, 'random_info': p_random}})
+
+def find_profileInfo(username):
+    record = user_profile_collection.find_one({'profile_username': username})
+    return record
+
+
+def list_profile():
+    all_profiles = user_profile_collection.find({}, {'_id': 0})
+    return list(all_profiles)
+
+
+def list_token():
+    all_tokens = user_token_collection.find({}, {'_id': 0})
+    return list(all_tokens)

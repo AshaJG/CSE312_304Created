@@ -1,12 +1,10 @@
 import socketserver
 import sys
 
-
 import register_paths
 import feed_paths
 from request import Request
 from router import Router
-# from register_paths import add_paths as path_register
 from buffer_engine import buffer
 from profile_paths import add_paths
 
@@ -23,8 +21,6 @@ class MyTCHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         received_data = self.request.recv(1048)
-        if len(received_data) == 0:
-            return
         sys.stdout.flush()
         sys.stderr.flush()
         request = Request(received_data)

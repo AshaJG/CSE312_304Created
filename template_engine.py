@@ -1,3 +1,6 @@
+
+
+
 def render_template(html_filename, data):
     with open(html_filename) as html_file:
         template = html_file.read()
@@ -9,6 +12,7 @@ def render_template(html_filename, data):
 def replace_placeholders(template, data):
     replaced_template = template
     for placeholder in data.keys():
+        print(placeholder)
         if isinstance(data[placeholder], str):
             if placeholder != "image_file":
                 replaced_template = replaced_template.replace("{{"+placeholder+"}}", data[placeholder])
@@ -34,6 +38,7 @@ def render_loop(template, data):
 
         # replaces HTML with actual info
         loop_content = ""
+        print(loop_data)
         for single_piece_of_content in loop_data:
             loop_content += replace_placeholders(loop_template, single_piece_of_content)
 

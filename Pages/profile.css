@@ -34,8 +34,8 @@
 /*    border-radius:50%;*/
 /*}*/
 .profile_pic{
-    width: 120px;
-    border-radius: 50%;
+    width: 300px;
+    border-radius: 100%;
 }
 
 .card h2{
