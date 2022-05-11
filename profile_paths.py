@@ -87,21 +87,17 @@ def post_profilePic(request, handler):
 def images(request, handler):
     image_path = request.path
     if "!" in image_path:
-        print("this one")
         slice_image_path = image_path[7:]
-        print("slice image path", slice_image_path)
         basic_name = slice_image_path[:len(slice_image_path) - 1]
         basic_name = basic_name.lower()
         basic_name = basic_name.replace("/", "")
         send_file("sample_page/image/" + basic_name + ".jpg", "image/jpeg", request, handler)
     elif image_path[-1].isdigit():
-        print("this one here")
         slice_image_path = image_path[7:]
         slice_image_path = slice_image_path.replace("/", "")
         # print("image_path", image_path, "slice image path", slice_image_path, flush=True)
         send_file(slice_image_path, "image/jpeg", request, handler)
     else:
-        print("this one there")
         slice_image_path = image_path[7:]
         # print("what's the slice", slice_image_path, flush=True)
         # slice_image_path = slice_image_path.lower()

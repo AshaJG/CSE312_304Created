@@ -1,7 +1,6 @@
 import os
 
 import database
-import formParser
 from response import generate_Response200
 
 
@@ -32,24 +31,9 @@ def write_incoming_picture(picture):
     return image_fn
 
 
-# EDIT THIS FUNCTION WHEN LOGIN AND REGISTER COMES IN TO UPDATE USER INFO
-def send_to_database():
-    comment_dict = {}
-    post_dict = {}
-    comment = formParser.comment_after
-    comment_key: str = comment.decode('utf-8')
-    pic_filename = write_incoming_picture()
-    # post_dict[comment_key] = pic_filename
-    post_dict = {"comment": comment_key, "pic_filename": pic_filename}
-    # print("image file in send to db and dict sent", pic_filename, post_dict, flush=True)
-    database.create_post(post_dict)
-
-
 def makeChange(request, handler):
     username_sent = request.cookies.get('username')
-    print("the username sent", username_sent, type(username_sent), flush=True)
     recordDB = database.find_profileInfo(username_sent)
-    print("in make change ", recordDB, flush=True)
     # recordDB = database.get_token_by_username(username_sent)
 
     if recordDB is not None:
