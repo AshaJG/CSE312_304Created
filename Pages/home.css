@@ -49,6 +49,13 @@ label {
 
 .post_username {
     flex: 1;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.post_username:visited {
+    color: black;
 }
 
 .post_content {

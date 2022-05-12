@@ -32,6 +32,7 @@ def home(request, handler):
     content = content.replace("{{Auth-Token}}", login_token.decode())
     token = secrets.token_urlsafe(20)
     content = content.replace("{{token}}", token)
+    content = content.replace("{{user_profile}}", username)
     handler.user_token_form[username] = token
     response = generate_response(content.encode(), b'text/html; charset=utf-8', b'200 OK', ["username","token"], [username, login_token.decode()])
     handler.request.sendall(response)

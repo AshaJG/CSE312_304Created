@@ -31,7 +31,7 @@ def loginPage(request, handler):
 def register(request, handler):
     salt = bcrypt.gensalt()
     password = request.form_content['password'].decode().encode("utf-8")
-    username = request.form_content['username'].decode()
+    username = request.form_content['username'].decode().replace(" ", "")
     hashed_password = bcrypt.hashpw(password, salt)
     db.store_user(username, hashed_password)
     handler.request.sendall(b'HTTP/1.1 301 Ok\r\nContent-Length: 0\r\nLocation: /\r\n\r\n')
@@ -39,7 +39,7 @@ def register(request, handler):
 # Logins in user when the correct password and username are inputed
 # Creates a new Auth-token for everytime they log in
 def login(request, handler):
-    username = request.form_content['username'].decode()
+    username = request.form_content['username'].decode().replace(" ", "")
     password = request.form_content['password'].decode()
     user = db.get_user_by_username(username)
     if user:
@@ -51,14 +51,11 @@ def login(request, handler):
             salt = bcrypt.gensalt()
             token = bcrypt.hashpw(token.encode("utf-8"), salt)
             db.store_user_token(username, token.decode())
-
             handler.request.sendall(response)
         else:
             handler.request.sendall(generate_response_redirect())
-            print("no match")
     else:
         handler.request.sendall(generate_response_redirect())
-        print("user not found")
 
 # Renders the login CSS
 def loginCSS(request, handler):
