@@ -12,13 +12,12 @@ def render_template(html_filename, data):
 def replace_placeholders(template, data):
     replaced_template = template
     for placeholder in data.keys():
-        print(placeholder)
         if isinstance(data[placeholder], str):
-            if placeholder != "image_file":
+            if placeholder != "post_image":
                 replaced_template = replaced_template.replace("{{"+placeholder+"}}", data[placeholder])
             else:
                 if data[placeholder] != '':
-                    replaced_template = replaced_template.replace("{{"+placeholder+"}}", "<img src= image/" + data[placeholder] + " alt= It's a "+ data[placeholder] + " class= my_image sytle= width: 100px; height: 100p;/>")
+                    replaced_template = replaced_template.replace("{{"+placeholder+"}}", "<img src= image/" + data[placeholder] + " alt= It's a "+ data[placeholder] + " class='post_image' />")
                 else:
                     replaced_template = replaced_template.replace("{{"+placeholder+"}}", "") 
     return replaced_template

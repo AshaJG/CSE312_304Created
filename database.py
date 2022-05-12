@@ -13,6 +13,7 @@ user_collection = db['users']
 user_token_collection = db['userTokens']
 image_id_collection = db["image_id"]
 feed_collection = db["feed"]
+feed_id_collection = db["feed_id"]
 user_profile_collection = db["profile"]
 
 
@@ -26,6 +27,16 @@ def get_next_id():
         users_id_collection.insert_one({'last_id': 1})
         return 1
 
+def get_next_post_id():
+    id_object = feed_id_collection.find_one({})
+    if id_object:
+        next_id = int(id_object['last_id']) + 1
+        feed_id_collection.update_one({}, {'$set': {'last_id': next_id}})
+        return next_id
+    else:
+        feed_id_collection.insert_one({'last_id': 1})
+        return 1
+
 
 def get_next_image_id():
     id_object = image_id_collection.find_one({})
@@ -37,8 +48,8 @@ def get_next_image_id():
         image_id_collection.insert_one({'last_id': 1})
         return 1
 
-def store_feed_content(image, comment):
-    feed_collection.insert_one({'message': comment.decode(), "image_file": image})
+def store_feed_content(username,image, comment, post_id):
+    feed_collection.insert_one({'post_username': username,'post_content': comment.decode(), "post_image": image, "post_id": post_id})
 
 def get_all_feed():
     feed_list = feed_collection.find({},{"_id":0})
@@ -52,19 +63,15 @@ def store_user(username, password):
 
 def get_user_by_username(username):
     user = user_collection.find_one({"username": username}, {"_id": 0})
-    print("user: ", user)
     return user
 
 def store_user_token(username, token):
-    record_exists = user_token_collection.find_one({'auth_token': token}, {'$exist': True})
+    record_exists = user_token_collection.find_one({'username': username})
     if record_exists:
-        record = user_token_collection.update_one({'auth_token': token},
-                                                  {'$set': {'username': username, 'auth_token': token}})
-        print('DB the record update:', record, flush=True)
+        record = user_token_collection.update_one({'username':username}, {'$set': {'auth_token': token}})
         return record
     else:
         record = user_token_collection.insert_one({'username': username, 'auth_token': token})
-        print('DB the record insert:', record, flush=True)
         return record
 
 
@@ -80,7 +87,6 @@ def find_userByToken(token_sent):
 
 def create_profileEdit(profile_dict):
     record = user_profile_collection.insert_one(profile_dict)
-    print("record created :", record, flush=True)
     return record
 
 
