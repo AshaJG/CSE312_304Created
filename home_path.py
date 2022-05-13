@@ -33,10 +33,7 @@ def home(request, handler):
     token = secrets.token_urlsafe(20)
     content = content.replace("{{token}}", token)
     content = content.replace("{{user_profile}}", username)
-    if handler.userList:
-        content = content.replace("{{userList}}", ", ".join(handler.userList))
-    else:
-        content = content.replace("{{userList}}", "")
+    content = content.replace("{{userList}}", ", ".join(handler.userList))
     handler.user_token_form[username] = token
     response = generate_response(content.encode(), b'text/html; charset=utf-8', b'200 OK', ["username","token"], [username, login_token.decode()])
     handler.request.sendall(response)

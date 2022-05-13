@@ -35,9 +35,10 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         if "Content-Length" in request.headers:
             received_data += buffer(int(request.headers["Content-Length"]) - len(request.body), self)
         request = Request(received_data)
-        username = request.cookies.get('username')
-        if username not in self.userList:
-            self.userList.append(username)
+        if 'username' in request.cookies:
+            username = request.cookies.get('username')
+            if username not in self.userList:
+                self.userList.append(username)
         self.router.handle_request(request, self)
 
 
