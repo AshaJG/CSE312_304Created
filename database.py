@@ -48,8 +48,8 @@ def get_next_image_id():
         image_id_collection.insert_one({'last_id': 1})
         return 1
 
-def store_feed_content(username,image, comment, post_id):
-    feed_collection.insert_one({'post_username': username,'post_content': comment.decode(), "post_image": image, "post_id": post_id})
+def store_feed_content(username,image, comment, post_id, profile_pic):
+    feed_collection.insert_one({'post_username': username,'post_content': comment.decode(), "post_image": image, "post_id": post_id, 'post_user_image':profile_pic})
 
 def get_all_feed():
     feed_list = feed_collection.find({},{"_id":0})

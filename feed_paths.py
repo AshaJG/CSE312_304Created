@@ -38,7 +38,12 @@ def feed(request, handler):
         return
     post_id = "post_id_" + str(db.get_next_post_id())
     image = request.form_content["upload"]
-    db.store_feed_content(username,save_image(image), request.form_content["comment"], post_id)
+    user_profile_picture = db.find_profileInfo(username)
+    if not user_profile_picture:
+        user_profile_picture = ""
+    else:
+        user_profile_picture = user_profile_picture['profile_pic']
+    db.store_feed_content(username,save_image(image), request.form_content["comment"], post_id, user_profile_picture)
     response = generate_response_redirect()
     handler.request.sendall(response)
 

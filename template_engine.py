@@ -1,5 +1,5 @@
 
-
+from Escape_html import escape_HTML
 
 def render_template(html_filename, data):
     with open(html_filename) as html_file:
@@ -14,10 +14,10 @@ def replace_placeholders(template, data):
     for placeholder in data.keys():
         if isinstance(data[placeholder], str):
             if placeholder != "post_image":
-                replaced_template = replaced_template.replace("{{"+placeholder+"}}", data[placeholder])
+                replaced_template = replaced_template.replace("{{"+placeholder+"}}", escape_HTML(data[placeholder].encode()))
             else:
                 if data[placeholder] != '':
-                    replaced_template = replaced_template.replace("{{"+placeholder+"}}", "<img src= image/" + data[placeholder] + " alt= It's a "+ data[placeholder] + " class='post_image' />")
+                    replaced_template = replaced_template.replace("{{"+placeholder+"}}", "<img src= image/" + data[placeholder] + " alt='No Picture due to docker restart' class='post_image'/>")
                 else:
                     replaced_template = replaced_template.replace("{{"+placeholder+"}}", "") 
     return replaced_template
@@ -34,10 +34,10 @@ def render_loop(template, data):
         loop_template = template[start_index + len(loop_start_tag): end_index]
 
         loop_data = data["loop_data"]
+        loop_data.reverse()
 
         # replaces HTML with actual info
         loop_content = ""
-        print(loop_data)
         for single_piece_of_content in loop_data:
             loop_content += replace_placeholders(loop_template, single_piece_of_content)
 

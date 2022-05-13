@@ -24,7 +24,11 @@
         <div class="post_container">
             {{loop}}
             <div class="post">
-                <a href="http://localhost:8080/profile/{{user_profile}}" class="post_username">{{post_username}}</a>
+                <a href="http://localhost:8080/profile/{{post_username}}" class="post_username">
+                    <img class="profile_picture" onerror="this.onerror=null; this.src='/image/defaultImage.jpeg'"
+                        src="/image/{{post_user_image}}" />
+                    {{post_username}}
+                </a>
                 <p class="post_content">{{post_content}}</p>
                 {{post_image}}
                 </br>
