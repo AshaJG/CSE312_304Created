@@ -15,6 +15,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     websocket_connections = []
     ws_users = {}
     user_token_form = {}
+    userList = []
 
     # import route paths and add here using add_path(self.router)
     def __init__(self, request, client_address, server):
@@ -30,13 +31,14 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         received_data = self.request.recv(2048)
         sys.stdout.flush()
         sys.stderr.flush()
-        print("------received data---------------")
-        print(received_data, flush=True)
-        print("----------ending------------------\n\n")
         request = Request(received_data)
         if "Content-Length" in request.headers:
             received_data += buffer(int(request.headers["Content-Length"]) - len(request.body), self)
         request = Request(received_data)
+        username = request.cookies.get('username')
+        if username not in self.userList:
+            self.userList.append(username)
+            print(self.userList)
         self.router.handle_request(request, self)
 
 

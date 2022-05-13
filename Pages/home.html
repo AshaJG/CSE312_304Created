@@ -7,8 +7,9 @@
 
 </header>
 
-<body >
+<body>
     <div class="post_page" welcome to Home page>
+        <div class="userList" style="color: white">People Online: {{userList}}</div>
         <form class="postForm" action="/feed_content" id="image-form" method="post" enctype="multipart/form-data">
             <label for="image-form-comment">Post: </label>
             </br>
@@ -32,12 +33,12 @@
                 <p class="post_content">{{post_content}}</p>
                 {{post_image}}
                 </br>
-                <button class="button" id="{{post_id}}"  onclick="sendLike('{{post_id}}')" >like</button>
+                <button class="button" id="{{post_id}}" onclick="sendLike('{{post_id}}')">like</button>
             </div>
             {{end_loop}}
         </div>
     </div>
- <script src="home.js"></script>
+    <script src="home.js"></script>
 </body>
 
 </html>

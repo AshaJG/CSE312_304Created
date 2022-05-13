@@ -16,6 +16,7 @@ def add_paths(router):
     router.add_route(Route('GET', '/register$', registerPage))
     router.add_route(Route('GET', '/login.css$', loginCSS))
     router.add_route(Route('GET', '/home.js', homejs))
+    router.add_route(Route('GET', '/signup.js', registerjs))
 
 
 # Renders the Register Page
@@ -70,3 +71,5 @@ def loginCSS(request, handler):
 def homejs(request, handler):
     send_response('Pages/home.js', b'text/javascript; charset=utf-8', request, handler)
 
+def registerjs(request, handler):
+    send_response('Pages/signup.js', b'text/javascript; charset=utf-8', request, handler)

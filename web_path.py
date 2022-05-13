@@ -49,6 +49,7 @@ def web_home(request, handler):
         if opcode == 8:
             handler.ws_users.pop(username)
             handler.websocket_connections.remove(handler)
+            handler.userList.remove(username)
 
             break
         else:
