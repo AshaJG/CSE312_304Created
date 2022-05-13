@@ -17,7 +17,7 @@ def add_webPaths(router):
     router.add_route(Route('GET', "/websocket", web_home))
 
 
-def web_home(request: Request, handler: socketserver.BaseRequestHandler):
+def web_home(request, handler):
     # Establish the Handshake Connection
     GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
     key_received = request.headers.get('Sec-WebSocket-Key')
@@ -30,15 +30,13 @@ def web_home(request: Request, handler: socketserver.BaseRequestHandler):
     handler.websocket_connections.append(handler)
 
     handler.ws_users[username] = handler
-    print("users to connection", handler.ws_users, flush=True)
-    print("users only", handler.ws_users.keys(), flush=True)
 
     # keep the websocket connections open
     while True:
         websocket_frames_received = handler.request.recv(1024)
         if len(websocket_frames_received) == 0:
             continue
-        # print("data received ", websocket_frames_received, flush=True)
+
         websocket_header = websocket_frames_received
         websocket_header_array = webFrame_to_binary(websocket_header)
 
@@ -51,12 +49,12 @@ def web_home(request: Request, handler: socketserver.BaseRequestHandler):
         if opcode == 8:
             handler.ws_users.pop(username)
             handler.websocket_connections.remove(handler)
-            print("users now", MyTCPHandler.ws_users.pop(username), flush=True)
+
             break
         else:
             # WHEN PAYLOAD IS 126
             if payload_length < 126:
-                print("payload is under 126")
+
                 actual_payload = payload_length
 
                 # Check if it needs to buffer
@@ -70,11 +68,9 @@ def web_home(request: Request, handler: socketserver.BaseRequestHandler):
                 masking_key = fullBuffer[2:6]
                 payload_dataOnly = fullBuffer[6:]
                 ws_toSend = execute_rest(payload_dataOnly, masking_key, username, request)
-                print("here 1")
 
                 # send a websocket frame to all the websocket connections
                 for connection in handler.websocket_connections:
-                    print("connection in ", connection)
                     connection.request.sendall(ws_toSend)
 
                 # handler.request.sendall(ws_toSend)
@@ -88,7 +84,7 @@ def make_socketKey(GUID, key_received):
     hashed = hashlib.sha1(key_received_encoded).hexdigest()
     hashed_b64 = codecs.encode(codecs.decode(hashed, 'hex'), 'base64')
     strip_hashed_key = hashed_b64.strip()
-    print("socket_key:", strip_hashed_key, flush=True)
+
     return strip_hashed_key
 
 
@@ -99,7 +95,6 @@ def implement_buffer(actual_payload, f_buffer, handler):
     frame_bufferCount = len(frame_buffer)
 
     while frame_bufferCount < payload_length:
-        print("Buffering...", "buffer count ", frame_bufferCount, "payload length:", payload_length, flush=True)
 
         data_received = handler.request.recv(1024)
         transf_data = webFrame_to_binary(data_received)
@@ -114,8 +109,7 @@ def implement_buffer(actual_payload, f_buffer, handler):
         frame_buffer += transf_dataX
 
     left = payload_length - len(frame_buffer)
-    print("How much is left to receive", left, flush=True)
-    print("the len we working with on the buffer ", len(frame_buffer), flush=True)
+
     return frame_buffer
 
 
@@ -143,8 +137,7 @@ def ascii_to_binary(array):
         hex_value_sliced = hex_value_s[2:]
         res = "{0:08b}".format(int(hex_value_sliced, 16))
         end_result.append(res)
-    # print("the end_result", res)
-    # print("this", end_result)
+
     return end_result
 
 
@@ -152,8 +145,7 @@ def ascii_to_binary(array):
 def prep_payloadMasking(list_payload):
     p_list = list_payload[:4]
     p_listJoint = ''.join(map(str, p_list))
-    # print (p_list)
-    # print (p_listJoint)
+
     return p_listJoint
 
 
@@ -167,7 +159,7 @@ def masked_withXor(mList, pList):
         value_XOR = int(masked_bit) ^ int(payload_bit)
         applied_XOR.append(value_XOR)
     final = make_each_string(applied_XOR)
-    # print (final)
+
     return final
 
 
@@ -185,8 +177,7 @@ def make_each_string(masked_list):
 # function that is responsible for removing the first 4 bytes from list and leaving the rest
 def format_payload(list_payload):
     payload_list = list_payload[4:]
-    # print ("the list in the function count ", len(payload_list))
-    # print(payload_list)
+
     return payload_list
 
 
@@ -217,7 +208,6 @@ def parse_payload(p_only, masked_key):
         final.extend(xor_value_left)
         # update the payload_data to end the while loop
         payload_data = []
-    # print("payload masked out", final, flush=True)
     return final
 
 
@@ -226,12 +216,10 @@ def plaintext_msg(parsed_msg):
     msg_received_BigString = ''.join(map(str, parsed_msg))
     value = int(str(msg_received_BigString), 2)
     formedString = binascii.unhexlify('%x' % value)
-    # print("format the msg", formedString, flush=True)
-    # print("type is ", type(formedString), flush=True)
+
     formedString_decode = formedString.decode()
     formedString_dict = json.loads(formedString_decode)
-    # print("format the msg", formedString_dict, flush=True)
-    # print("type is ", type(formedString_dict), flush=True)
+
     return formedString_dict
 
 
@@ -249,7 +237,6 @@ def build_webframe(msg):
     body_len = len(body)
 
     if body_len < 126:
-        print("in the 1st loop")
         # format the payload length
         res1 = "{:07b}".format(body_len)
         res2 = "0" + res1
@@ -258,7 +245,7 @@ def build_webframe(msg):
         frame = [fbit_toSend, pbit_toSend]
         web_frame = bytes(frame)
         web_frame += body
-        print(web_frame)
+
     return web_frame
 
 
@@ -269,55 +256,30 @@ def execute_rest(pLoad, mKey, username, request):
     masking_key = mKey
 
     msg_parsed = parse_payload(payload_dataOnly, masking_key)
-    print("the msg_parsed", msg_parsed, type(msg_parsed), flush=True)
-
-    # format the parsed payload to what we can understand
     formedString_dict = plaintext_msg(msg_parsed)
-    print("recognizable : ", formedString_dict, flush=True)
 
-    # get the post_id received
     like_postId = formedString_dict.get('post_ID')
-    print("the like_postId", like_postId, flush=True)
     like_received = formedString_dict.get('like')
-    print("the like received", like_received, flush=True)
-
-
-    # just increment the number
     count_likes = increment_likes(like_postId)
-    print("count_likes", count_likes, flush=True)
 
     # BUILD THE WEB FRAME BACK TO SEND
     liked_dict = {'post_ID': like_postId, 'like': str(count_likes)}
-    print("what happened,", liked_dict, flush=True)
 
     # save to db
     something = database.create_likeId(liked_dict)
-    print("line 292", something, flush=True)
-
-    print("line 294", liked_dict, flush=True)
     send_dict = {'post_ID': like_postId, 'like': int(count_likes)}
     record_toSend = database.find_post(like_postId)
-
     ws_send = build_webframe(record_toSend)
-    print("send back", ws_send, flush=True)
     return ws_send
 
 
 def increment_likes(like_postId):
     record_postID = database.find_post(like_postId)
-    # print("the like received in increment", like_received, flush = True )
-    print("record post id db", record_postID)
     count = 0
     if record_postID is not None:
-        print("execute this 1")
         already_likes = record_postID.get('like')
-        print("already_likes:", already_likes, type(already_likes), flush=True)
         count = int(already_likes) + 1
-        print("the count :", count , flush=True)
-        database.update_postCount(like_postId,count)
+        database.update_postCount(like_postId, count)
     else:
-        print("execute that 2")
         count += 1
-        print("already_likes:", count, type(count), flush=True)
-    print("count:", count, type(count), flush=True)
     return count
