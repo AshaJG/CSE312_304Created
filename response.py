@@ -42,3 +42,11 @@ def generate_Redirect(path: str):
     response += b'\r\nLocation: ' + path.encode()
     response += b'\r\n\r\n'
     return response
+
+def generate_Response101(accept_key: bytes):
+    response = b'HTTP/1.1 101 Switching Protocols\r\n'
+    response += b'Upgrade: websocket\r\n'
+    response += b'Connection: Upgrade\r\n'
+    response += b'Sec-WebSocket-Accept: ' + accept_key
+    response += b'\r\n\r\n'
+    return response

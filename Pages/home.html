@@ -4,10 +4,10 @@
 <header>
     <title>CSE312 Home Page</title>
     <link rel="stylesheet" type="text/css" href="home.css" />
-    <script src="home.js"></script>
+
 </header>
 
-<body>
+<body >
     <div class="post_page" welcome to Home page>
         <form class="postForm" action="/feed_content" id="image-form" method="post" enctype="multipart/form-data">
             <label for="image-form-comment">Post: </label>
@@ -28,11 +28,12 @@
                 <p class="post_content">{{post_content}}</p>
                 {{post_image}}
                 </br>
-                <button class="button" id="{{post_id}}">like</button>
+                <button class="button" id="{{post_id}}"  onclick="sendLike('{{post_id}}')" >like</button>
             </div>
             {{end_loop}}
         </div>
     </div>
+ <script src="home.js"></script>
 </body>
 
 </html>

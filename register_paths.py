@@ -17,15 +17,16 @@ def add_paths(router):
     router.add_route(Route('GET', '/login.css$', loginCSS))
     router.add_route(Route('GET', '/home.js', homejs))
 
-    
 
 # Renders the Register Page
 def registerPage(request, handler):
     send_response('Pages/signup.html', b'text/html; charset=utf-8', request, handler)
 
+
 # Renders the Login Page
 def loginPage(request, handler):
     send_response('Pages/login.html', b'text/html; charset=utf-8', request, handler)
+
 
 # Store user in the database when they sign up
 def register(request, handler):
@@ -35,6 +36,7 @@ def register(request, handler):
     hashed_password = bcrypt.hashpw(password, salt)
     db.store_user(username, hashed_password)
     handler.request.sendall(b'HTTP/1.1 301 Ok\r\nContent-Length: 0\r\nLocation: /\r\n\r\n')
+
 
 # Logins in user when the correct password and username are inputed
 # Creates a new Auth-token for everytime they log in
@@ -57,15 +59,11 @@ def login(request, handler):
     else:
         handler.request.sendall(generate_response_redirect())
 
+
 # Renders the login CSS
 def loginCSS(request, handler):
     send_response('Pages/login.css', b'text/css; charset=utf-8', request, handler)
 
+
 def homejs(request, handler):
-    send_response('Pages/home.js', b'text/js; charset=utf-8', request, handler)
-
-    
-
-
-
-
+    send_response('Pages/home.js', b'text/javascript; charset=utf-8', request, handler)

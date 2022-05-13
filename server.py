@@ -4,14 +4,16 @@ import sys
 import register_paths
 import feed_paths
 import home_path
+import web_path
 from request import Request
 from router import Router
 from buffer_engine import buffer
 from profile_paths import add_paths
 
 
-class MyTCHandler(socketserver.BaseRequestHandler):
-
+class MyTCPHandler(socketserver.BaseRequestHandler):
+    websocket_connections = []
+    ws_users = {}
     user_token_form = {}
 
     # import route paths and add here using add_path(self.router)
@@ -21,21 +23,25 @@ class MyTCHandler(socketserver.BaseRequestHandler):
         register_paths.add_paths(self.router)
         feed_paths.add_paths(self.router)
         home_path.add_paths(self.router)
+        web_path.add_webPaths(self.router)
         super().__init__(request, client_address, server)
 
     def handle(self):
         received_data = self.request.recv(1048)
         sys.stdout.flush()
         sys.stderr.flush()
+        print("------received data---------------")
+        print(received_data, flush=True)
+        print("----------ending------------------\n\n")
         request = Request(received_data)
         if "Content-Length" in request.headers:
             received_data += buffer(int(request.headers["Content-Length"]) - len(request.body), self)
         request = Request(received_data)
-        #print(received_data)
+        # print(received_data)
         self.router.handle_request(request, self)
 
 
 if __name__ == "__main__":
     HOST, PORT = "0.0.0.0", 8000
-    server = socketserver.ThreadingTCPServer((HOST, PORT), MyTCHandler)
+    server = socketserver.ThreadingTCPServer((HOST, PORT), MyTCPHandler)
     server.serve_forever()
