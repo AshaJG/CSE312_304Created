@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    messages with: {{person}}
+    <hr>
+    {{loop}}
+    <div style="width: 30%; flex-grow: 1; word-wrap: break-word;">
+        <p><b>{{user}} : {{message}}</b><br /></p>
+    </div>
+    {{end_loop}}
+    <form class="postForm" action="/senddm" id="dm-form" method="post" enctype="multipart/form-data">
+        <label for="image-form-comment">Message: </label>
+        </br>
+        <textarea placeholder="type your message here" class="chatInput" id="dmcomment" name="dmcomment"
+            cols="40" rows="6"></textarea>
+        <br />
+        <input id="form-token" name="auth_token" type="hidden" value="{{Auth-Token}}">
+        <input id="form-token" name="token" type="hidden" value="{{token}}">
+        <input id="rec" name="rec" type="hidden" value="{{person}}">
+        <input class="button" type="submit" value="send">
+    </form>
+</body>
+</html>
