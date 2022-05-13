@@ -75,7 +75,6 @@ def web_home(request, handler):
                     connection.request.sendall(ws_toSend)
 
                 # handler.request.sendall(ws_toSend)
-    print("outside of loop")
 
 
 # function responsible for the socket_key
@@ -225,7 +224,6 @@ def plaintext_msg(parsed_msg):
 
 
 def build_webframe(msg):
-    print("Building WebFrame...")
     frame = []
     web_frame = bytes()
 

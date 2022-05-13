@@ -4,12 +4,15 @@
 <header>
     <title>CSE312 Home Page</title>
     <link rel="stylesheet" type="text/css" href="home.css" />
+    <script src="home.js"></script>
+
 
 </header>
 
 <body>
     <div class="post_page" welcome to Home page>
         <div class="userList" style="color: white">People Online: {{userList}}</div>
+        <a href="/dmMenu">Your DMs</a>
         <form class="postForm" action="/feed_content" id="image-form" method="post" enctype="multipart/form-data">
             <label for="image-form-comment">Post: </label>
             </br>
@@ -39,8 +42,6 @@
         </div>
     </div>
     {{end_loop}}
-
-    <a href="/dmMenu">Your DMs</a>
 
 </body>
 

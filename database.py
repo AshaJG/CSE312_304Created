@@ -65,7 +65,6 @@ def get_all_feed():
 
 def store_user(username, password):
     user_collection.insert_one({"username": username, "password": password})
-    print(username + ' Store in the database')
 
 
 def get_user_by_username(username):
@@ -119,7 +118,6 @@ def create_likeId(like_dict):
 
 def find_post(post_id):
     record = like_collection.find_one({'post_ID': post_id}, {"_id": 0})
-    print("in find post db", post_id)
     return record
 
 
@@ -170,44 +168,27 @@ def add_dm_message(sender, reciever, message):
     dm_exists3 = user_dm_collection.find_one({'user1': reciever}, {'$exist':True})
     dm_exists4 = user_dm_collection.find_one({'user2': reciever}, {'$exist':True})
     if(dm_exists1 and dm_exists4):
-        print("updating dms")
-        sys.stdout.flush()
         data = user_dm_collection.find_one({'user1': sender,'user2': reciever})
         update = data['dms']
-        print(update)
-        sys.stdout.flush()
         update.append(message)
-        print(update)
-        sys.stdout.flush()
         record = user_dm_collection.update_one({'user1': sender, 'user2': reciever}, {'$set': {'dms': update}})
         return record
     elif(dm_exists2 and dm_exists3):
-        print("updating dms")
         sys.stdout.flush()
         data = user_dm_collection.find_one({'user1': reciever,'user2': sender})
         update = data['dms']
-        print(update)
-        sys.stdout.flush()
         update.append(message)
-        print(update)
-        sys.stdout.flush()
         record = user_dm_collection.update_one({'user1': reciever, 'user2': sender}, {'$set': {'dms': update}})
         return record
 
 def find_all_dms(user):
-    print("FINDING ALL DMS")
     dm1 = list(user_dm_collection.find({'user1': user}, {'_id':0, 'dms': 0, 'user1': 0}))
     dm2 = list(user_dm_collection.find({'user2': user}, {'_id':0, 'dms':0, 'user2': 0}))
-    print(dm1)
-    sys.stdout.flush()
-    print(dm2)
-    sys.stdout.flush()
     dms =[]
     for entry in dm1:
         dms.append({'user':entry["user2"]})
     for entry in dm2:
         dms.append({'user':entry["user1"]})
-    print(dms)
     sys.stdout.flush
     if(dms == []):
         return "none"

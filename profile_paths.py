@@ -25,7 +25,6 @@ def profile(request, handler):
     user = database.find_profileInfo(username_signed)
 
     if user is None:
-        print("condition 1", flush=True)
         record_con_token = database.get_token_by_username(username_signed)
         record_username = record_con_token.get('username')
         record_token = record_con_token.get('auth_token')
@@ -64,7 +63,6 @@ def profile(request, handler):
             profile_randomInfoString = profile_randomInfo.decode('utf-8')
         else:
             profile_randomInfoString = profile_randomInfo
-        # print("p_r", profile_randomInfo, type(profile_randomInfo), flush=True)
 
         profile_pic = user.get('profile_pic')
 

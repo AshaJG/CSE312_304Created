@@ -2,7 +2,6 @@
 const socket = new WebSocket('ws://' + window.location.host + '/websocket');
 
 function sendLike(post_id){
-
     socket.send(JSON.stringify({'post_ID':post_id,'like':0}));
 }
 

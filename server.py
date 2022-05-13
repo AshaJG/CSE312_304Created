@@ -38,7 +38,6 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         username = request.cookies.get('username')
         if username not in self.userList:
             self.userList.append(username)
-            print(self.userList)
         self.router.handle_request(request, self)
 
 

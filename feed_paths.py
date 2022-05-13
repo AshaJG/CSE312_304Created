@@ -59,69 +59,42 @@ def feed(request, handler):
 #goes to the dm menu
 def dmMenu(request, handler):
     user = request.cookies["username"]
-    print("finding all dms for " + user)
     users = {}
     users = db.find_all_dms(user)
-    print("found all dms")
-    sys.stdout.flush()
-    print(users)
-    sys.stdout.flush()
     if users == "none":
         users = [{"user": ""}]
     #for person
     body = render_template('Pages/dmMenu.html', {"loop_data":users})
-    print("out of gen template")
-    sys.stdout.flush()
-    #print(body)
-    sys.stdout.flush()
     response = generate_response(body.encode(), b'text/html; charset=utf-8', b'200 OK')
     handler.request.sendall(response)
 
 def newdm(request, handler):
     todm = request.form_content["username"].decode()
-    print("to dm")
-    sys.stdout.flush()
     user = request.cookies["username"]
-    print(todm)
-    sys.stdout.flush()
     exsits = db.get_user_by_username(todm)
-    print(exsits)
-    sys.stdout.flush()
     if(exsits == None):
-        print("no user exsists")
         response = generate_response_redirect(location="/dmMenu")
         handler.request.sendall(response)
     else:
-        print("user exsists, adding dm")
-        sys.stdout.flush()
         record = db.add_dm(user, todm)
-        print(record)
         if(record == "already exsists"):
             path = "/userdm/"+todm
             response = generate_response_redirect(location=path)
             handler.request.sendall(response)
-        sys.stdout.flush()
         response = generate_response_redirect(location="/dmMenu")
         handler.request.sendall(response)
 
 def indm(request, handler):
-    print("in my special in dm fucntin")
-    sys.stdout.flush()
     requestpath = request.path
     whole = requestpath.split('/')
     reciever = whole[2]
-    print(reciever)
-    sys.stdout.flush()
     sender = request.cookies["username"]
     messages = db.get_dm(sender, reciever)
-    print(messages)
-    sys.stdout.flush()
     body = render_template('Pages/dm.html', {"person":reciever,"loop_data": messages})
     response = generate_response(body.encode(), content_type=b'text/html; charset=utf-8')
     handler.request.sendall(response)
 
 def senddm(request, handler):
-    print("sending dm")
     sys.stdout.flush()
     reciever = request.form_content["rec"].decode()
     content = request.form_content["dmcomment"].decode()
@@ -131,8 +104,6 @@ def senddm(request, handler):
     sender = request.cookies["username"]
     message = {'user': sender, 'message': content}
     record = db.add_dm_message(sender, reciever, message)
-    print(record)
-    sys.stdout.flush()
     path = '/userdm/'+reciever
     response = generate_response_redirect(location=path)
     handler.request.sendall(response)
