@@ -119,6 +119,9 @@ def senddm(request, handler):
     sys.stdout.flush()
     reciever = request.form_content["rec"].decode()
     content = request.form_content["dmcomment"].decode()
+    take2 = content.replace("&", "&amp;")
+    take3 = take2.replace("<", "&lt;")
+    content = take3.replace("<", "&gt;")
     sender = request.cookies["username"]
     message = {'user': sender, 'message': content}
     record = db.add_dm_message(sender, reciever, message)
