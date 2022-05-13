@@ -11,6 +11,7 @@ from response import generate_Response200, generate_response_redirect
 from response import generate_response
 from file_engine import send_response
 from template_engine import render_template
+from token_check_engine import check_token
 
 def add_paths(router):
     router.add_route(Route('POST', '/feed_content', feed))
@@ -35,18 +36,23 @@ def images(request, handler):
 
 # Checks for auth-token and random token before allow user to upload to feed page
 def feed(request, handler):
-    auth_token = request.cookies["token"]
-    feed_auth_token = request.form_content["auth_token"]
-    if auth_token.encode() != feed_auth_token:
-        print("token did not match")
+    username = request.cookies['username']
+    if check_token(request.cookies["token"].encode(), request.form_content["auth_token"]):
         response = generate_response_redirect()
         handler.request.sendall(response)
         return
-    feed_rand_token = request.form_content["token"]
+    if check_token(request.form_content["token"], handler.user_token_form[username].encode()):
+        response = generate_response_redirect()
+        handler.request.sendall(response)
+        return
+    post_id = "post_id_" + str(db.get_next_post_id())
     image = request.form_content["upload"]
-    image_file_name = save_image(image)
-    comment = request.form_content["comment"]
-    db.store_feed_content(image_file_name, comment)
+    user_profile_picture = db.find_profileInfo(username)
+    if not user_profile_picture:
+        user_profile_picture = ""
+    else:
+        user_profile_picture = user_profile_picture['profile_pic']
+    db.store_feed_content(username,save_image(image), request.form_content["comment"], post_id, user_profile_picture)
     response = generate_response_redirect()
     handler.request.sendall(response)
 

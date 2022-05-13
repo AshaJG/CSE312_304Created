@@ -16,6 +16,8 @@ user_collection = db['users']
 user_token_collection = db['userTokens']
 image_id_collection = db["image_id"]
 feed_collection = db["feed"]
+feed_id_collection = db["feed_id"]
+like_collection = db['like_postId']
 user_profile_collection = db["profile"]
 user_dm_collection = db["dms"]
 
@@ -30,6 +32,17 @@ def get_next_id():
         return 1
 
 
+def get_next_post_id():
+    id_object = feed_id_collection.find_one({})
+    if id_object:
+        next_id = int(id_object['last_id']) + 1
+        feed_id_collection.update_one({}, {'$set': {'last_id': next_id}})
+        return next_id
+    else:
+        feed_id_collection.insert_one({'last_id': 1})
+        return 1
+
+
 def get_next_image_id():
     id_object = image_id_collection.find_one({})
     if id_object:
@@ -40,11 +53,13 @@ def get_next_image_id():
         image_id_collection.insert_one({'last_id': 1})
         return 1
 
-def store_feed_content(image, comment):
-    feed_collection.insert_one({'message': comment.decode(), "image_file": image})
+
+def store_feed_content(username,image, comment, post_id, profile_pic):
+    feed_collection.insert_one({'post_username': username,'post_content': comment.decode(), "post_image": image, "post_id": post_id, 'post_user_image':profile_pic})
+
 
 def get_all_feed():
-    feed_list = feed_collection.find({},{"_id":0})
+    feed_list = feed_collection.find({}, {"_id": 0})
     return list(feed_list)
 
 
@@ -55,19 +70,16 @@ def store_user(username, password):
 
 def get_user_by_username(username):
     user = user_collection.find_one({"username": username}, {"_id": 0})
-    print("user: ", user)
     return user
 
+
 def store_user_token(username, token):
-    record_exists = user_token_collection.find_one({'auth_token': token}, {'$exist': True})
+    record_exists = user_token_collection.find_one({'username': username})
     if record_exists:
-        record = user_token_collection.update_one({'auth_token': token},
-                                                  {'$set': {'username': username, 'auth_token': token}})
-        print('DB the record update:', record, flush=True)
+        record = user_token_collection.update_one({'username': username}, {'$set': {'auth_token': token}})
         return record
     else:
         record = user_token_collection.insert_one({'username': username, 'auth_token': token})
-        print('DB the record insert:', record, flush=True)
         return record
 
 
@@ -83,7 +95,6 @@ def find_userByToken(token_sent):
 
 def create_profileEdit(profile_dict):
     record = user_profile_collection.insert_one(profile_dict)
-    print("record created :", record, flush=True)
     return record
 
 
@@ -95,9 +106,25 @@ def update_profileEdit(update_dict):
     user_profile_collection.update_one({'profile_username': username}, {
         '$set': {'profile_name': p_user, 'profile_pic': p_pic, 'random_info': p_random}})
 
+
 def find_profileInfo(username):
     record = user_profile_collection.find_one({'profile_username': username})
     return record
+
+
+def create_likeId(like_dict):
+    record = like_collection.insert_one(like_dict)
+    return record
+
+
+def find_post(post_id):
+    record = like_collection.find_one({'post_ID': post_id}, {"_id": 0})
+    print("in find post db", post_id)
+    return record
+
+
+def update_postCount(post_id, count):
+    record = like_collection.update_one({'post_ID': post_id}, {'$set': {'like': count}})
 
 
 def list_profile():

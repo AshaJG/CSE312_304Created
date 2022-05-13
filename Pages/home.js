@@ -1,33 +1,20 @@
-(function () {
-	"use strict";
+// Establish a WebSocket connection with the server
+const socket = new WebSocket('ws://' + window.location.host + '/websocket');
 
-	// Do something with the response data
-	// Since the visitor will leave the page we don't need this
-	onResponse = function () {
-		if (httpRequest.readyState == 4) {
-			if (httpRequest.status === 200) {
-				// Do something with httpRequest.responseText
-			} else {
-				console.error('Error in sending ajax request');
-			}
-		}
-	}
+function sendLike(post_id){
 
-	makeRequest = function (url) {
-		var httpRequest;
+    socket.send(JSON.stringify({'post_ID':post_id,'like':0}));
+}
 
-		// Checks if browser is IE7+
-		if (window.XMLHttpRequest) {
-			httpRequest = new XMLHttpRequest();
-		} else if (window.ActiveXObject) {
-			httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-		}
+//needs a function to display it back on the website
+function start(like_dict) {
+    let chat = document.getElementById(like_dict.post_ID);
+    chat.innerHTML = like_dict.like + " like";
+}
+socket.onmessage = function (ws_message) {
+    const message = JSON.parse(ws_message.data);
+    console.log(message)
+    start(message)
+}
 
-		httpRequest.open("GET", url);
-		httpRequest.send();
 
-		httpRequest.onreadystatechange = onResponse;
-	};
-
-	window.onbeforeunload = makeRequest('http://localhost:8080')
-})();
