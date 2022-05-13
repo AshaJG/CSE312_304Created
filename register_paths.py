@@ -1,6 +1,6 @@
-from sqlite3 import dbapi2
 import bcrypt
 import secrets
+import re
 
 from response import generate_response, generate_response_redirect
 from file_engine import send_response
@@ -32,6 +32,9 @@ def register(request, handler):
     salt = bcrypt.gensalt()
     password = request.form_content['password'].decode().encode("utf-8")
     username = request.form_content['username'].decode().replace(" ", "")
+    if '/' in username or "\\" in username:
+        handler.request.sendall(b'HTTP/1.1 301 Ok\r\nContent-Length: 0\r\nLocation: /registerUsernameError\r\n\r\n')
+        return
     hashed_password = bcrypt.hashpw(password, salt)
     db.store_user(username, hashed_password)
     handler.request.sendall(b'HTTP/1.1 301 Ok\r\nContent-Length: 0\r\nLocation: /\r\n\r\n')
@@ -62,9 +65,8 @@ def loginCSS(request, handler):
     send_response('Pages/login.css', b'text/css; charset=utf-8', request, handler)
 
 def homejs(request, handler):
-    send_response('Pages/home.js', b'text/js; charset=utf-8', request, handler)
+    send_response('Pages/home.js', b'text/javascript; charset=utf-8', request, handler)
 
-    
 
 
 
