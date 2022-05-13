@@ -1,7 +1,5 @@
 html {
-    background-image: url('image/Background.jpeg');
-    background-repeat: repeat/no-repeat;
-    background-size: 1280px 853px;
+    background-color: rgba(0, 0, 0, 1);
 
 }
 
@@ -11,8 +9,8 @@ label {
 
 .post_page {
     width: 100%;
-    flex: 1;
-    text-align: center;
+    display: grid;
+    grid-template-columns: 2 auto auto;
     justify-content: center;
 }
 
@@ -20,44 +18,66 @@ label {
     color: white
 }
 
+.chatInput {
+    border: none;
+    min-width: 400px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.3);
+    padding: 10px 10px;
+    border-radius: 20px;
+    resize: none;
+}
+
 .post_container {
     flex: 1;
     flex-grow: 1;
     width: 400px;
-    transform: translateX(140%);
+    text-align: center;
     flex-direction: column;
 }
 
 .post {
-    flex: 1;
-    flex-direction: column;
-    flex-grow: 1;
-    padding: 10px 10px 10px 10px;
-    width: 300px;
-    word-wrap: break-word;
-    text-align: baseline;
-    background-color: rgba(128, 128, 128, .5);
+    display: grid;
+    grid-template-columns: 2 auto auto;
+    max-width: 400px;
     margin-top: 20px;
+    color: #fff;
+    padding: 10px 10px 10px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
 }
 
 .post_image {
-    flex: 1;
     justify-self: center;
     aspect-ratio: 1/1;
     width: 200px
 }
 
 .post_username {
-    flex: 1;
     cursor: pointer;
     text-decoration: none;
+    color: rgba(180, 180, 180, 1);
     font-weight: bold;
+    justify-self: baseline;
 }
 
 .post_username:visited {
-    color: black;
+    color: rgba(180, 180, 180, 1);
 }
 
 .post_content {
     margin-bottom: 10px;
+    justify-self: baseline;
+}
+
+.profile_picture {
+    width: 25px;
+    height: 25px;
+    border-radius: 12.5px;
+    margin-right: 10px;
+    background-color: greenyellow;
 }
