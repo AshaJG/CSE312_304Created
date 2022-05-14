@@ -60,7 +60,9 @@ def store_feed_content(username,image, comment, post_id, profile_pic):
 
 def get_all_feed():
     feed_list = feed_collection.find({}, {"_id": 0})
-    return list(feed_list)
+    feed_list = list(feed_list)
+    feed_list.reverse()
+    return feed_list
 
 
 def store_user(username, password):

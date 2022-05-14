@@ -29,8 +29,6 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         received_data = self.request.recv(2048)
-        sys.stdout.flush()
-        sys.stderr.flush()
         request = Request(received_data)
         if "Content-Length" in request.headers:
             received_data += buffer(int(request.headers["Content-Length"]) - len(request.body), self)

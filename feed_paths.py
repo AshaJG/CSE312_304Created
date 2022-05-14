@@ -1,8 +1,7 @@
 import os
-from re import template
-from reprlib import recursive_repr
 import sys
-from urllib import response
+import bcrypt
+
 
 
 from router import Route
@@ -58,6 +57,16 @@ def feed(request, handler):
 
 #goes to the dm menu
 def dmMenu(request, handler):
+    if not 'username' in request.cookies:
+        redirct_to_login(request, handler)
+        return
+    username = request.cookies['username']
+    login_token = request.cookies['token'].encode('utf-8')
+    record = db.get_token_by_username(username)
+    db_token = record.get('auth_token')
+    if not bcrypt.checkpw(login_token, db_token.encode('utf-8')):
+        redirct_to_login(request, handler)
+        return
     user = request.cookies["username"]
     users = {}
     users = db.find_all_dms(user)
@@ -85,6 +94,16 @@ def newdm(request, handler):
         handler.request.sendall(response)
 
 def indm(request, handler):
+    if not 'username' in request.cookies:
+        redirct_to_login(request, handler)
+        return
+    username = request.cookies['username']
+    login_token = request.cookies['token'].encode('utf-8')
+    record = db.get_token_by_username(username)
+    db_token = record.get('auth_token')
+    if not bcrypt.checkpw(login_token, db_token.encode('utf-8')):
+        redirct_to_login(request, handler)
+        return
     requestpath = request.path
     whole = requestpath.split('/')
     reciever = whole[2]
@@ -118,4 +137,9 @@ def save_image(image: bytes):
         image_file.write(image)
         image_file.close()
     return image_file_name
+
+
+
+def redirct_to_login(request, handler):
+    handler.request.sendall('HTTP/1.1 301 OK\r\nContent-Length: 0\r\nLocation: /login\r\n'.encode())
   

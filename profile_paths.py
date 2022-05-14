@@ -1,4 +1,7 @@
 import os
+import bcrypt
+
+
 
 from urllib import response
 import database
@@ -20,6 +23,16 @@ def add_paths(router):
 
 
 def profile(request, handler):
+    if not 'username' in request.cookies:
+        redirct_to_login(request, handler)
+        return
+    username = request.cookies['username']
+    login_token = request.cookies['token'].encode('utf-8')
+    record = database.get_token_by_username(username)
+    db_token = record.get('auth_token')
+    if not bcrypt.checkpw(login_token, db_token.encode('utf-8')):
+        redirct_to_login(request, handler)
+        return
     username_signed = request.cookies.get('username')
     user = database.find_profileInfo(username_signed)
 
@@ -104,6 +117,16 @@ def get_image(request, handler):
 
 
 def user_profile(request, handler):
+    if not 'username' in request.cookies:
+        redirct_to_login(request, handler)
+        return
+    username = request.cookies['username']
+    login_token = request.cookies['token'].encode('utf-8')
+    record = database.get_token_by_username(username)
+    db_token = record.get('auth_token')
+    if not bcrypt.checkpw(login_token, db_token.encode('utf-8')):
+        redirct_to_login(request, handler)
+        return
     user = request.path.split('/')[2]
     user = database.find_profileInfo(user)
     if not user:
@@ -118,3 +141,7 @@ def user_profile(request, handler):
         content2 = content2.replace("{{random_info}}", user['random_info'])
         response = generate_Response200(content2.encode(), "text/html; charset=utf-8", "200 OK")
         handler.request.sendall(response)
+
+
+def redirct_to_login(request, handler):
+    handler.request.sendall('HTTP/1.1 301 OK\r\nContent-Length: 0\r\nLocation: /login\r\n'.encode())

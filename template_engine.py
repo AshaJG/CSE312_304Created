@@ -36,7 +36,6 @@ def render_loop(template, data):
         loop_template = template[start_index + len(loop_start_tag): end_index]
 
         loop_data = data["loop_data"]
-        loop_data.reverse()
 
         # replaces HTML with actual info
         loop_content = ""

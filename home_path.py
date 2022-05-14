@@ -28,7 +28,7 @@ def home(request, handler):
         redirct_to_login(request, handler)
         return
     # Renders the home page
-    content = render_template('Pages/home.html', {"loop_data": db.get_all_feed()})
+    content = render_template('Pages/home.html', {"loop_data": (db.get_all_feed())})
     content = content.replace("{{Auth-Token}}", login_token.decode())
     token = secrets.token_urlsafe(20)
     content = content.replace("{{token}}", token)

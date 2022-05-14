@@ -3,52 +3,51 @@
 
 <header>
     <title>CSE312 Home Page</title>
-    <link rel="stylesheet" type="text/css" href="home.css"/>
+    <link rel="stylesheet" type="text/css" href="home.css" />
     <script src="home.js"></script>
 
 
 </header>
 
 <body>
-<div class="post_page" welcome to Home page>
-    <div class="topnav">
-        <a class="active" href="#home">Home</a>
-        <a href="/dmMenu">Send A Direct Message</a>
-        <a href="/profile">Visit Your Profile</a>
-    </div>
-    <br/> <br/>
-    <div class="userList" style="color: white">People Online: {{userList}}</div>
-    <br><br>
-
-    <form class="postForm" action="/feed_content" id="image-form" method="post" enctype="multipart/form-data">
-        <label for="image-form-comment">Post: </label>
-        </br>
-        <textarea placeholder="Have something on your mind...." class="chatInput" id="image-form-comment"
-                  name="comment" cols="40" rows="6"></textarea>
-        <br/>
-        <label for="form-file">Image: </label>
-        <input class="button" id="file_selection" id="form-file" type="file" name="upload">
-        <input id="form-token" name="auth_token" type="hidden" value="{{Auth-Token}}">
-        <input id="form-token" name="token" type="hidden" value="{{token}}">
-        <input class="button" type="submit" value="Post">
-    </form>
-    <div class="post_container">
-        {{loop}}
-        <div class="post">
-            <a href="http://localhost:8080/profile/{{post_username}}" class="post_username">
-                <img class="profile_picture" onerror="this.onerror=null; this.src='/image/defaultImage.jpeg'"
-                     src="/image/{{post_user_image}}"/>
-                {{post_username}}
-            </a>
-            <p class="post_content">{{post_content}}</p>
-            {{post_image}}
-            </br>
-            <button class="button" id="{{post_id}}" onclick="sendLike('{{post_id}}')">like</button>
+    <div class="post_page" welcome to Home page>
+        <div class="topnav">
+            <a class="active" href="#home">Home</a>
+            <a href="/dmMenu">Send A Direct Message</a>
+            <a href="/profile">Visit Your Profile</a>
         </div>
-        {{end_loop}}
+        <br /> <br />
+        <div class="userList" style="color: white">People Online: {{userList}}</div>
+        <br><br>
+
+        <form class="postForm" action="/feed_content" id="image-form" method="post" enctype="multipart/form-data">
+            <label for="image-form-comment">Post: </label>
+            </br>
+            <textarea placeholder="Have something on your mind...." class="chatInput" id="image-form-comment"
+                name="comment" cols="40" rows="6"></textarea>
+            <br />
+            <label for="form-file">Image: </label>
+            <input class="button" id="file_selection" id="form-file" type="file" name="upload">
+            <input id="form-token" name="auth_token" type="hidden" value="{{Auth-Token}}">
+            <input id="form-token" name="token" type="hidden" value="{{token}}">
+            <input class="button" type="submit" value="Post">
+        </form>
+        <div class="post_container">
+            {{loop}}
+            <div class="post">
+                <a href="http://localhost:8080/profile/{{post_username}}" class="post_username">
+                    <img class="profile_picture" onerror="this.onerror=null; this.src='/image/defaultImage.jpeg'"
+                        src="/image/{{post_user_image}}" />
+                    {{post_username}}
+                </a>
+                <p class="post_content">{{post_content}}</p>
+                {{post_image}}
+                </br>
+                <button class="button" id="{{post_id}}" onclick="sendLike('{{post_id}}')">like</button>
+            </div>
+            {{end_loop}}
+        </div>
     </div>
-</div>
-{{end_loop}}
 
 </body>
 
