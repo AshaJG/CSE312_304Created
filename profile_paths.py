@@ -1,6 +1,5 @@
 import os
 
-
 from urllib import response
 import database
 from profileHelpers import send_file, makeChange
@@ -73,7 +72,6 @@ def profile(request, handler):
             content2 = content2.replace("{{name}}", profile_userString)
             content2 = content2.replace("{{image_sent}}", profile_pic)
             content2 = content2.replace("{{random_info}}", profile_randomInfoString)
-                                   
 
             response = generate_Response200(content2.encode(), "text/html; charset=utf-8", "200OK")
             handler.request.sendall(response)
@@ -93,6 +91,7 @@ def post_profilePic(request, handler):
     response_redirect = generate_Redirect(redirect_url)
     handler.request.sendall(response_redirect)
 
+
 def get_image(request, handler):
     data = request.path.split('/')
     # Search through images to find request on
@@ -100,8 +99,9 @@ def get_image(request, handler):
         send_response('Pages/image/' + data[3], b'image/jpeg', request, handler)
         return
     # Image request not found 404 Error
-    response = generate_response('404\nCannot Find Page'.encode(),b'text/plain; charset=utf-8',b'404 Error')
+    response = generate_response('404\nCannot Find Page'.encode(), b'text/plain; charset=utf-8', b'404 Error')
     handler.request.sendall(response)
+
 
 def user_profile(request, handler):
     user = request.path.split('/')[2]

@@ -4,24 +4,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Your DMs</title>
+    <link rel="stylesheet" type="text/css" href="home.css"/>
 </head>
 <body>
-    People You Have DMs With
-    {{loop}}
-    <div style="width: 30%; flex-grow: 1; word-wrap: break-word;">
-        <p><b>{{user}}</b><br /></p>
-    </div>
-    {{end_loop}}
-    <form class="newdm" action="/newdm" id="newdm" method="post" enctype="multipart/form-data">
-        <label for="username">Who do you wnat to dm? </label>
-        </br>
-        <textarea placeholder="their username" class="username" id="username" name="username"></textarea>
-        <br />
-        <input id="form-token" name="auth_token" type="hidden" value="{{Auth-Token}}">
-        <input id="form-token" name="token" type="hidden" value="{{token}}">
-        
-        <input class="button" type="submit" value="Post">
-    </form>
+<div class="topnav">
+    <a class="active" href="#">Direct Message</a>
+    <a href="/">Home</a>
+    <a href="/profile">Profile</a>
+</div>
+People You Have DMs With
+{{loop}}
+<div style="width: 30%; flex-grow: 1; word-wrap: break-word;">
+    <p><b>{{user}}</b><br/></p>
+</div>
+{{end_loop}}
+<form class="newdm" action="/newdm" id="newdm" method="post" enctype="multipart/form-data">
+    <label for="username">Who do you want to dm? </label>
+    </br>
+    <textarea placeholder="their username" class="username" id="username" name="username"></textarea>
+    <br/>
+    <input id="form-token" name="auth_token" type="hidden" value="{{Auth-Token}}">
+    <input id="form-token" name="token" type="hidden" value="{{token}}">
+
+    <input class="button" type="submit" value="Post">
+</form>
 </body>
 </html>

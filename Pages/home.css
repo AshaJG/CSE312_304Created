@@ -1,6 +1,6 @@
 html {
-    background-color: rgba(0, 0, 0, 1);
-
+    /*background-color: rgba(0, 0, 0, 1);*/
+    background: linear-gradient(to left, #190A05, #870000); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 label {
@@ -80,4 +80,49 @@ label {
     border-radius: 12.5px;
     margin-right: 10px;
     background-color: greenyellow;
+}
+.button{
+    background-image: linear-gradient(to left, rgba(255, 146, 202, 0.75) 0%, rgba(145, 149, 251, 0.86) 100%);
+	box-shadow: 0 9px 25px -5px #df91fb;
+	font-family: 'Abel', sans-serif;
+	padding: 0.5em 1.9em;
+	margin: 2.3em 0 0 0;
+	border-radius: 7px;
+	cursor: pointer;
+	color: #FFFFFF;
+	font-size: 1em;
+	outline: none;
+	border: none;
+	transition: 0.3s linear;
+    text-transform: capitalize;
+    justify-content: center;
+    text-decoration: none;
+}
+
+
+.topnav {
+  background-color: #333;
+  overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+    float: left;
+    color: #f2f2f2;
+    background: linear-gradient(to right, #1F1C18, #8E0E00);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+    background: dimgray;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+    color: white;
 }
